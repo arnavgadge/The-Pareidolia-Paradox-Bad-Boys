@@ -33,8 +33,7 @@ combining with image features for final classification.
 - Weighted random sampling to handle class imbalance
   (Class 1: 5000 samples, Class 0: 2854 samples)
 - Weighted cross entropy loss
-- Data augmentation: horizontal flip, vertical flip,
-  color jitter
+- Data augmentation: horizontal flip, vertical flip, color jitter
 - Early stopping with patience=7
 - Separate learning rates: backbone 5e-6, head 1e-4
 - CosineAnnealingLR scheduler
@@ -48,21 +47,29 @@ combining with image features for final classification.
 ## Results
 Validation Balanced Accuracy: 0.7743
 
-## Repository Structure
-```
-pareidolia-paradox/
-├── README.md
-├── notebook.ipynb
-├── submission_timm.csv
-└── requirements.txt
-```
+## Code Structure
+`pareidolia_solution.py` contains the complete pipeline divided into 7 sections:
 
-## How to Run
+| Section | Description |
+|---------|-------------|
+| Cell 1 | Imports, library setup, dataset paths |
+| Cell 2 | Load train/test CSV metadata |
+| Cell 3 | Dataset class with sin/cos sun encoding + TTA function |
+| Cell 4 | Model definitions — ConvNeXt-Base and Swin-Base (ImageNet-22k) |
+| Cell 5 | Data loaders with weighted sampler for class imbalance |
+| Cell 6 | Training loop — both models trained sequentially |
+| Cell 7 | TTA ensemble inference — generates submission_timm.csv |
+
+## How to Reproduce
 1. Install requirements: `pip install -r requirements.txt`
-2. Set correct dataset paths in Cell 1
-3. Run cells 1-7 sequentially
-4. `submission_timm.csv` generated in working directory
+2. Upload datasets to Kaggle and attach them to a notebook
+3. Enable GPU T4 x2 accelerator
+4. Update the 4 path variables in Cell 1 to match your dataset paths
+5. Run `pareidolia_solution.py` sequentially
+6. Output: `submission_timm.csv` in `/kaggle/working/`
 
 ## Hardware
 - Kaggle GPU T4 x2
 - Training time: ~3 hours total
+- Image size: 384×384
+- Batch size: 16
