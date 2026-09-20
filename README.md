@@ -48,25 +48,45 @@ combining with image features for final classification.
 Validation Balanced Accuracy: 0.7743
 
 ## Code Structure
-`pareidolia_solution.py` contains the complete pipeline divided into 7 sections:
+
+### train.py
+Contains the complete training pipeline:
 
 | Section | Description |
 |---------|-------------|
-| Cell 1 | Imports, library setup, dataset paths |
-| Cell 2 | Load train/test CSV metadata |
-| Cell 3 | Dataset class with sin/cos sun encoding + TTA function |
-| Cell 4 | Model definitions — ConvNeXt-Base and Swin-Base (ImageNet-22k) |
-| Cell 5 | Data loaders with weighted sampler for class imbalance |
-| Cell 6 | Training loop — both models trained sequentially |
-| Cell 7 | TTA ensemble inference — generates submission_timm.csv |
+| Imports & Paths | Libraries, dataset paths, device setup |
+| Load Data | Read train CSV metadata |
+| Dataset | LunarDataset class with sin/cos sun encoding and augmentation |
+| Model Definitions | ConvNeXt-Base and Swin-Base with ImageNet-22k weights |
+| Data Loaders | Weighted sampler for class imbalance handling |
+| Training | Training loop for both models with early stopping |
+
+Output: `best_convnext_in22k.pth` and `best_swin_in22k.pth`
+
+### inference.py
+Loads trained weights and generates predictions:
+
+| Section | Description |
+|---------|-------------|
+| Load Models | Loads both .pth weight files |
+| TTA Prediction | 6-version test time augmentation per image |
+| Ensemble | Averages probabilities across both models |
+| Output | Saves `submission.csv` with 2000 predictions |
 
 ## How to Reproduce
+
+### Training
 1. Install requirements: `pip install -r requirements.txt`
 2. Upload datasets to Kaggle and attach them to a notebook
 3. Enable GPU T4 x2 accelerator
-4. Update the 4 path variables in Cell 1 to match your dataset paths
-5. Run `pareidolia_solution.py` sequentially
-6. Output: `submission_timm.csv` in `/kaggle/working/`
+4. Update the path variables at the top of `train.py`
+5. Run `train.py`
+6. Output: `best_convnext_in22k.pth` and `best_swin_in22k.pth`
+
+### Inference
+1. Update path variables and weight paths at the top of `inference.py`
+2. Run `inference.py`
+3. Output: `submission.csv` in `/kaggle/working/`
 
 ## Hardware
 - Kaggle GPU T4 x2
